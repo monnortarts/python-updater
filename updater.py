@@ -51,6 +51,7 @@ with zipfile.ZipFile(file_name, "r") as zipped_file:
     
     # Extract only the selected files
     for file in files_to_extract:
-        zipped_file.extract(file, os.path.dirname(os.path.abspath(__file__)))
-        print(f"Extracted {file}")
+        if file.startswith(zipped_file.namelist()[0]):
+            zipped_file.extract(file, os.path.dirname(os.path.abspath(__file__)))
+            print(f"Extracted {file}")
 print("Done Extracting!")
