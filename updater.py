@@ -46,12 +46,28 @@ for item in script_dir.iterdir():
         shutil.rmtree(item)
 print("Done Deleting!")
 print("Extracting...")
+github_file_name = ""
 with zipfile.ZipFile(file_name, "r") as zipped_file:
-    files_to_extract = [f for f in zipped_file.namelist() if f != "updater.py"]
+    #files_to_extract = [f for f in zipped_file.namelist() if f != "updater.py"]
     
     # Extract only the selected files
-    for file in files_to_extract:
-        if file.startswith(zipped_file.namelist()[0]):
-            zipped_file.extract(file, os.path.dirname(os.path.abspath(__file__)))
-            print(f"Extracted {file}")
+    zipped_file.extract(zipped_file.namelist()[0], os.path.dirname(os.path.abspath(__file__)))
+    print(f"Extracted {zipped_file.namelist()[0]}")
+    github_file_name = zipped_file.namelist()[0]
+Path(os.path.abspath(file_name)).unlink()
 print("Done Extracting!")
+
+source_dir = Path(os.path.abspath(github_file_name)).resolve()
+
+# Ensure the source directory exists
+if source_dir.exists() and source_dir.is_dir():
+    for item in source_dir.iterdir():
+        destination = script_dir / item.name  # Keep the same name in the new location
+        if item == script_path:
+            continue  # Skip the script itself
+        if item.is_file():  # Copy files
+            shutil.copy2(item, destination)
+        elif item.is_dir():  # Copy directories
+            shutil.copytree(item, destination, dirs_exist_ok=True)
+
+print(f"Copied everything from '{source_dir}' to '{script_dir}'")
