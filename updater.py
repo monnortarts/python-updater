@@ -3,6 +3,8 @@ import zipfile
 import os
 import stat
 import shutil
+import time
+import sys
 from pathlib import Path
 
 def force_remove_readonly(func, path, _):
@@ -11,8 +13,8 @@ def force_remove_readonly(func, path, _):
     func(path)  # Retry deletion
 
 # Replace with the actual owner and repository name
-OWNER = 'monnortarts'
-REPO = 'python-script-updater-test'
+OWNER = sys.argv[1]
+REPO = sys.argv[2]
 
 # GitHub API URL for the latest release
 api_url = f"https://api.github.com/repos/{OWNER}/{REPO}/releases/latest"
@@ -35,6 +37,7 @@ with open(file_name, "wb") as file:
         file.write(chunk)
 
 print(f"Latest release downloaded as {file_name}")
+time.sleep(1)
 print("Deleting old project...")
 script_path = Path(__file__).resolve()
 zip_path = Path(file_name).resolve()
@@ -80,3 +83,4 @@ if source_dir.exists() and source_dir.is_dir():
             print(f"Copied {item}")
 shutil.rmtree(source_dir, onerror=force_remove_readonly)
 print(f"Copied everything from '{source_dir}' to '{script_dir}'")
+print("Done Updating!")
