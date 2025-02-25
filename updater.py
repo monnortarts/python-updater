@@ -42,12 +42,15 @@ print("Deleting old project...")
 script_path = Path(__file__).resolve()
 zip_path = Path(file_name).resolve()
 script_dir = script_path.parent  # Script's directory
-
+items_to_skip = []
+if not sys.argv[3] == 'None':
+    sys.argv[3] = sys.argv[3].split(',')
+for item in sys.argv[3]:
+    items_to_skip.append(Path(item).resolve())
 # Iterate over all files and folders in the directory
 for item in script_dir.iterdir():
-    if item == script_path or item == zip_path:
+    if item == script_path or item == zip_path or item in items_to_skip:
         continue  # Skip the script itself
-
     # Delete files
     if item.is_file():
         item.unlink()
