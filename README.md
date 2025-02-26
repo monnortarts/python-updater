@@ -1,3 +1,3 @@
 #Instructions
 
-##.env structure and syntax
+##env structure and syntax
